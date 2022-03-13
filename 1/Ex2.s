@@ -1,4 +1,6 @@
 ; Declare year and is leap variable
+; Result in ecx register 1 if is leap, 0 otherwise
+
 .data
     year DW 2020
 
