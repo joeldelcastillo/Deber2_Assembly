@@ -1,17 +1,40 @@
-section .data
-	hello:     db 'Hello world!',10    ; 'Hello world!' plus a linefeed character
-	helloLen:  equ $-hello             ; Length of the 'Hello world!' string
-
-section .text
-	global _start
-
-_start:
-	mov eax,4            ; The system call for write (sys_write)
-	mov ebx,1            ; File descriptor 1 - standard output
-	mov ecx,hello        ; Put the offset of hello in ecx
-	mov edx,helloLen     ; helloLen is a constant, so we don't need to say
-	                     ;  mov edx,[helloLen] to get it's actual value
-	int 80h              ; Call the kernel
-	mov eax,1            ; The system call for exit (sys_exit)
-	mov ebx,0            ; Exit with return "code" of 0 (no error)
-	int 80h;
+; Fibonacci nth Number
+; Uses the silly recursive algorithm
+; Stores the argument in ebx (7)
+; Stores the result in ecx (13)
+main:      mov eax, 7
+           push eax
+           xor eax, eax
+           call fib
+           pop ebx
+           mov ecx, eax
+           xor eax, eax
+           int 32
+fib:       push ebp
+           mov ebp, esp
+           mov ebx, [ebp + 2]
+           mov ecx, 1
+           cmp ebx, ecx
+           je basecase1
+           xor ecx, ecx
+           cmp ebx, ecx
+           jle basecase0
+           dec ebx
+           push ebx
+           call fib
+           pop ebx
+           dec ebx
+           push eax
+           push ebx
+           call fib
+           pop ebx
+           pop ecx
+           add eax, ecx
+           pop ebp
+           ret
+basecase1: mov eax, 1
+           pop ebp
+           ret
+basecase0: mov eax, 0
+           pop ebp
+           ret
